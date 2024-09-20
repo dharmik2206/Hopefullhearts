@@ -4,40 +4,31 @@ include("loginnot_check.php");
 
 include("connection.php");
 
-// if (isset($_POST['submiteBook'])) {
-//     // Get the form data
-//     $bookdonationid = $_POST['bookdonationid'];
-//     $bookdonationquantity = $_POST['bookdonationquantity'];
-//     $bookdonationtype = $_POST['bookdonationtype'];
-//     $bookdonationaddress = $_POST['bookdonationaddress'];
-//     $bookdonationdate = $_POST['bookdonationdate'];
-//     $name = $_POST['name'];
-//     $contact = $_POST['contact'];
+if (isset($_POST['submiteBook'])) {
+    // Get the form data
+    $bookdonationquantity = $_POST['bookdonationquantity'];
+    $bookdonationtype = $_POST['bookdonationtype'];
+    $bookdonationaddress = $_POST['bookdonationaddress'];
+    $bookdonationdate = $_POST['bookdonationdate'];
+    $name = $_POST['name'];
+    $contact = $_POST['contact'];
 
-//     // Insert data into the database
-//     $sql = "INSERT INTO bookdonationdetails (bookdonationid, bookdonationquantity, bookdonationtype, bookdonationaddress, bookdonationdate, name, contact)
-//             VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Insert data into the database
+    $sql = "INSERT INTO bookdonationdetails (bookdonationquantity, bookdonationtype, bookdonationaddress, bookdonationdate, name, contact) 
+    VALUES ($bookdonationquantity, '$bookdonationtype', '$bookdonationaddress', '$bookdonationdate', '$name', '$contact')";
 
-//     // Prepare and bind
-//     if ($stmt = $conn->prepare($sql)) {
-//         $stmt->bind_param("sisssss", $bookdonationid, $bookdonationquantity, $bookdonationtype, $bookdonationaddress, $bookdonationdate, $name, $contact);
 
-//         // Execute the statement
-//         if ($stmt->execute()) {
-//             // Success message or redirection
-//             echo "Donation submitted successfully!";
-//         } else {
-//             echo "Error: " . $stmt->error;
-//         }
-//         $stmt->close();
-//     } else {
-//         echo "Error: " . $conn->error;
-//     }
-
-//     $conn->close();
-// }
+    if (mysqli_query($conn, $sql)) {
+        echo "<script>alert('Donation details successfully inserted.')</script>";
+        header("Location: donate.php");
+        exit(); // Important to exit after redirect
+    } else {
+        $_SESSION['message'] = 'Error: ' . mysqli_error($conn);
+        header("Location: donate.php");
+        exit(); // Important to exit after redirect
+    }
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -66,6 +57,7 @@ include("connection.php");
     <link href="assets/css/light.css" rel="stylesheet">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
+
 <style>
     /*--------------------------------------------------------------
 #   dontae.php
@@ -291,6 +283,8 @@ include("connection.php");
                             <h2>Make a Donation</h2>
                         </div>
                         <div id="Donations" class="tab-pane">
+
+                            <!-- donate radio button -->
                             <div class="donation-options" style="text-align: center; margin-top: 50px;">
                                 <div>
                                     <input type="radio" id="bookOption" name="donationType" value="book"
@@ -308,7 +302,7 @@ include("connection.php");
                                     <label for="clothesOption">Donate Clothes</label>
                                 </div>
                             </div>
-
+                            <!-- donate radio button end -->
 
                             <!-- Book Donation Modal -->
                             <div id="formBookModal" class="modal fade" tabindex="-1" role="dialog"
@@ -330,10 +324,11 @@ include("connection.php");
                                                 <input type="tel" id="contact" name="contact" required><br><br>
 
                                                 <label for="bookdonationquantity">Quantity:</label>
-                                                <input type="number" id="bookdonationquantity" name="bookdonationquantity"
-                                                    required><br><br>
+                                                <input type="number" id="bookdonationquantity"
+                                                    name="bookdonationquantity" required><br><br>
 
-                                                <label for="bookdonationtype">Type of Donation(Book Type e.x college-book):</label>
+                                                <label for="bookdonationtype">Type of Donation(Book Type e.x
+                                                    college-book):</label>
                                                 <input type="text" id="bookdonationtype" name="bookdonationtype"
                                                     required><br><br>
 
@@ -346,7 +341,8 @@ include("connection.php");
                                                     required><br><br>
 
 
-                                                <input type="submit" value="Submit Donation" id="submitBook">
+                                                <input type="submit" value="Submit Donation" id="submiteBook"
+                                                    name="submiteBook">
                                             </form>
                                         </div>
                                         <div class="modal-footer">
@@ -376,14 +372,17 @@ include("connection.php");
                                                     required><br><br>
 
                                                 <label for="donorlastname">Last Name:</label>
-                                                <input type="text" id="donorlastname" name="donorlastname" required><br><br>
+                                                <input type="text" id="donorlastname" name="donorlastname"
+                                                    required><br><br>
 
                                                 <label for="donoremail">Email:</label>
                                                 <input type="email" id="donoremail" name="donoremail" required><br><br>
 
                                                 <label for="donationamount">Enter Amount:</label>
-                                                <input type="number" id="donationamount" name="donationamount" step="0.01" required><br><br>
-                                                <span id="error-message" style="color: red; display: none;">Amount must be at least 100 INR</span>
+                                                <input type="number" id="donationamount" name="donationamount"
+                                                    step="0.01" required><br><br>
+                                                <span id="error-message" style="color: red; display: none;">Amount must
+                                                    be at least 100 INR</span>
 
                                                 <label for="donoraddress">Address:</label>
                                                 <textarea id="donoraddress" name="donoraddress" rows="4"
@@ -435,8 +434,8 @@ include("connection.php");
                                                     required><br><br>
 
                                                 <label for="clothesdonationaddress">Address:</label>
-                                                <textarea id="clothesdonationaddress" name="clothesdonationaddress" rows="4"
-                                                    required></textarea><br><br>
+                                                <textarea id="clothesdonationaddress" name="clothesdonationaddress"
+                                                    rows="4" required></textarea><br><br>
 
                                                 <label for="clothesdonationdate">Date of Donation:</label>
                                                 <input type="date" id="clothesdonationdate" name="clothesdonationdate"
@@ -472,12 +471,15 @@ include("connection.php");
                                 <div class="newsletter-form">
                                     <form action="https://api.web3forms.com/submit" method="POST">
                                         <div>
-                                            <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
+                                            <input type="hidden" name="access_key"
+                                                value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
 
-                                            <input type="email" name="email" placeholder="Enter Your Email" class="form-control" required>
+                                            <input type="email" name="email" placeholder="Enter Your Email"
+                                                class="form-control" required>
 
                                             <!-- Honeypot Spam Protection -->
-                                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                                            <input type="checkbox" name="botcheck" class="hidden"
+                                                style="display: none;">
 
                                             <button class="bigCursor" type="submit">Subscribe</button>
                                         </div>
@@ -528,12 +530,12 @@ include("connection.php");
 
         // Get the close button and attach click event
         var closeBtn = document.getElementsByClassName("close")[0];
-        closeBtn.onclick = function() {
+        closeBtn.onclick = function () {
             closeModal();
         }
 
         // Close modal when clicking outside of the modal content
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             var modal = document.getElementById("formBook");
             if (event.target == modal) {
                 closeModal();
@@ -541,9 +543,9 @@ include("connection.php");
         }
 
         // Using Bootstrap's modal trigger instead of custom logic for simplicity
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Automatically close modal when clicking outside of the content
-            $('.modal').on('click', function(event) {
+            $('.modal').on('click', function (event) {
                 if ($(event.target).hasClass('modal')) {
                     $(this).modal('hide');
                 }
@@ -553,7 +555,7 @@ include("connection.php");
 
     <!-- payment script -->
     <script>
-        document.getElementById('donationamount').addEventListener('input', function() {
+        document.getElementById('donationamount').addEventListener('input', function () {
             var amountInput = document.getElementById('donationamount');
             var amount = parseFloat(amountInput.value);
             var errorMessage = document.getElementById('error-message');
@@ -566,7 +568,7 @@ include("connection.php");
             }
         });
 
-        document.getElementById('pay-button').onclick = function(e) {
+        document.getElementById('pay-button').onclick = function (e) {
             e.preventDefault(); // Prevent form submission
 
             var amountInput = document.getElementById('donationamount');
@@ -585,7 +587,7 @@ include("connection.php");
                 currency: 'INR',
                 name: 'Hopefull Hearts',
                 description: 'Donation',
-                handler: function(response) {
+                handler: function (response) {
                     // Handle success callback
                     alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
                 },
