@@ -20,12 +20,10 @@ if (isset($_POST['submiteBook'])) {
 
     if (mysqli_query($conn, $sql)) {
         echo "<script>alert('Donation details successfully inserted.')</script>";
-        header("Location: donate.php");
-        exit(); // Important to exit after redirect
+        header("location: causes.php");
+        exit();
     } else {
         $_SESSION['message'] = 'Error: ' . mysqli_error($conn);
-        header("Location: donate.php");
-        exit(); // Important to exit after redirect
     }
 }
 ?>
@@ -552,7 +550,6 @@ if (isset($_POST['submiteBook'])) {
             });
         });
     </script>
-
     <!-- payment script -->
     <script>
         document.getElementById('donationamount').addEventListener('input', function () {
