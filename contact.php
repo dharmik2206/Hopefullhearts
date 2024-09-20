@@ -109,7 +109,7 @@ session_start();
                                 <form action="https://api.web3forms.com/submit" method="POST" class="contact-validation-active">
 
 
-                                    <input type="hidden" name="access_key" value="fdfff505-20ac-42b5-841a-abb4328df328">
+                                    <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
 
                                     <div>
                                         <input type="text" class="form-control" name="name" id="name"
@@ -143,9 +143,7 @@ session_start();
                                     </div>
 
                                     <!-- Honeypot Spam Protection -->
-                                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
-
-                                </form>
+                                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">                                </form>
                             </div>
                         </div>
                     </div>

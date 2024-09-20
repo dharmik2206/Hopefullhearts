@@ -220,7 +220,7 @@ include("login_check.php");
                                 <div class="newsletter-form">
                                     <form action="https://api.web3forms.com/submit" method="POST">
                                         <div>
-                                            <input type="hidden" name="access_key" value="fdfff505-20ac-42b5-841a-abb4328df328">
+                                            <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
 
                                             <input type="email" name="email" placeholder="Enter Your Email" class="form-control" required>
 

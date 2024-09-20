@@ -254,9 +254,15 @@ session_start();
                                 <h3>Subscribe our Newsletter</h3>
                                 <p>Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas.</p>
                                 <div class="newsletter-form">
-                                    <form>
+                                <form action="https://api.web3forms.com/submit" method="POST">
                                         <div>
-                                            <input type="text" placeholder="Enter Your Email" class="form-control">
+                                            <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
+
+                                            <input type="email" name="email" placeholder="Enter Your Email" class="form-control" required>
+
+                                            <!-- Honeypot Spam Protection -->
+                                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
                                             <button class="bigCursor" type="submit">Subscribe</button>
                                         </div>
                                     </form>

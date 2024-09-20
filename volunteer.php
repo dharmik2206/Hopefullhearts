@@ -97,7 +97,8 @@ session_start();
                         <div class="col-md-6">
                             <div class="volunteer-contact">
                                 <div class="volunteer-contact-form">
-                                    <form method="post" class="contact-validation-active" id="contact-form">
+                                <form action="https://api.web3forms.com/submit" method="POST" class="contact-validation-active">
+                                        <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-6 col-sm-6 col-12 form-group">
                                                 <input type="text" class="form-control" name="name" id="name" placeholder="First Name">
@@ -127,6 +128,9 @@ session_start();
                                             <div id="success">Thank you</div>
                                             <div id="error"> Error occurred while sending email. Please try again later. </div>
                                         </div>
+                                         <!-- Honeypot Spam Protection -->
+                                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
                                     </form>
                                 </div>
                             </div>
@@ -193,9 +197,15 @@ session_start();
                                 <h3>Subscribe our Newsletter</h3>
                                 <p>Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas.</p>
                                 <div class="newsletter-form">
-                                    <form>
+                                    <form action="https://api.web3forms.com/submit" method="POST">
                                         <div>
-                                            <input type="text" placeholder="Enter Your Email" class="form-control">
+                                            <input type="hidden" name="access_key" value="f481b791-e34e-4c6f-bc8f-b0c460b47dc2">
+
+                                            <input type="email" name="email" placeholder="Enter Your Email" class="form-control" required>
+
+                                            <!-- Honeypot Spam Protection -->
+                                            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
                                             <button class="bigCursor" type="submit">Subscribe</button>
                                         </div>
                                     </form>
