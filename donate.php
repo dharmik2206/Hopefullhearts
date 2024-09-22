@@ -5,28 +5,34 @@ include("loginnot_check.php");
 include("connection.php");
 
 // book data insert code
-if (isset($_POST['submiteBook'])) {
-    // Get the form data
-    $bookdonationquantity = $_POST['bookdonationquantity'];
-    $bookdonationtype = $_POST['bookdonationtype'];
-    $bookdonationaddress = $_POST['bookdonationaddress'];
-    $bookdonationdate = $_POST['bookdonationdate'];
+if (isset($_POST['submitBook'])) {
+    // Retrieve form data
     $name = $_POST['name'];
     $contact = $_POST['contact'];
+    $bookdonationquantity = (int)$_POST['bookdonationquantity'];
+    $bookdonationaddress = $_POST['bookdonationaddress'];
+    $bookdonationdate = $_POST['bookdonationdate'];
+    $bookdonationtypes = $_POST['bookdonationtype']; // Array of book types
 
-    // Insert data into the database
-    $sql = "INSERT INTO bookdonationdetails (bookdonationquantity, bookdonationtype, bookdonationaddress, bookdonationdate, name, contact) 
-    VALUES ($bookdonationquantity, '$bookdonationtype', '$bookdonationaddress', '$bookdonationdate', '$name', '$contact')";
+    // Loop through each book type and insert into the database
+    for ($i = 0; $i < $bookdonationquantity; $i++) {
+        if (isset($bookdonationtypes[$i])) { // Check if type exists
+            $type = $bookdonationtypes[$i]; // Sanitize input
 
+            $sql = "INSERT INTO bookdonationdetails (bookdonationquantity, bookdonationtype, bookdonationaddress, bookdonationdate, name, contact)
+                    VALUES ($bookdonationquantity, '$type', '$bookdonationaddress', '$bookdonationdate', '$name', '$contact')";
 
-    if (mysqli_query($conn, $sql)) {
-        echo "<script>alert('Donation details successfully inserted.')</script>";
-        header("location: causes.php");
-        exit();
-    } else {
-        $_SESSION['message'] = 'Error: ' . mysqli_error($conn);
+            if (mysqli_query($conn, $sql)) {
+                echo "<script>alert('Book donation details successfully inserted.')</script>";
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+            }
+        }
     }
+    header("Location: causes.php");
+    exit();
 }
+
 
 
 // clothes data insret code
@@ -39,7 +45,6 @@ if (isset($_POST['submitClotes'])) {
     $clothesdonationdate = $_POST['clothesdonationdate'];
     $clothesdonationsizes = $_POST['clothesdonationsize']; // Array of sizes
 
-    // Loop through the array of sizes and insert each into the database
     for ($i = 0; $i < count($clothesdonationsizes); $i++) {
         $size = $clothesdonationsizes[$i]; // Get the current size
 
@@ -265,6 +270,27 @@ mysqli_close($conn);
         text-decoration: none;
         cursor: pointer;
     }
+
+    #pay-button {
+    background-color: #f67d4a;
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+    }
+
+    #pay-button:hover {
+        background-color: #d8603d; 
+    }
+
+    #pay-button:disabled {
+        background-color: #cccccc; 
+        cursor: not-allowed; 
+    }
+
 </style>
 
 <body>
@@ -335,8 +361,7 @@ mysqli_close($conn);
 
 
                             <!-- Book Donation Modal -->
-                            <div id="formBookModal" class="modal fade" tabindex="-1" role="dialog"
-                                aria-labelledby="formBookLabel" aria-hidden="true">
+                            <div id="formBookModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="formBookLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -346,7 +371,7 @@ mysqli_close($conn);
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="" method="POST">
+                                            <form action="" method="POST" id="bookDonationForm">
                                                 <label for="name">Your Name:</label>
                                                 <input type="text" id="name" name="name" required><br><br>
 
@@ -354,32 +379,22 @@ mysqli_close($conn);
                                                 <input type="tel" id="contact" name="contact" required><br><br>
 
                                                 <label for="bookdonationquantity">Quantity:</label>
-                                                <input type="number" id="bookdonationquantity"
-                                                    name="bookdonationquantity" required>
-                                                <span id="book-error-message" style="color: red; display: none;">Quantity should be at least 20.</span>
+                                                <input type="number" id="bookdonationquantity" name="bookdonationquantity" required min="1" oninput="generateBookTypeInputs()">
+                                                <span id="book-error-message" style="color: red; display: none;">Quantity should be at least 10.</span><br><br>
 
-                                                <br><br>
-                                                <label for="bookdonationtype">Type of Donation(Book Type e.x
-                                                    college-book):</label>
-                                                <input type="text" id="bookdonationtype" name="bookdonationtype"
-                                                    required><br><br>
+                                                <div id="bookTypeInputs"></div>
 
                                                 <label for="bookdonationaddress">Address:</label>
-                                                <textarea id="bookdonationaddress" name="bookdonationaddress" rows="4"
-                                                    required></textarea><br><br>
+                                                <textarea id="bookdonationaddress" name="bookdonationaddress" rows="4" required></textarea><br><br>
 
                                                 <label for="bookdonationdate">Date of Donation:</label>
-                                                <input type="date" id="bookdonationdate" name="bookdonationdate"
-                                                    required><br><br>
+                                                <input type="date" id="bookdonationdate" name="bookdonationdate" required><br><br>
 
-
-                                                <input type="submit" value="Submit Donation" id="submiteBook"
-                                                    name="submiteBook">
+                                                <input type="submit" value="Submit Donation" id="submitBook" name="submitBook">
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -589,12 +604,32 @@ mysqli_close($conn);
             var bookErrorMessage = document.getElementById('book-error-message');
 
             // Check if quantity is valid and at least 20
-            if (isNaN(quantity) || quantity < 20) {
+            if (isNaN(quantity) || quantity < 10) {
                 bookErrorMessage.style.display = 'inline';
             } else {
                 bookErrorMessage.style.display = 'none';
             }
         });
+
+        function generateBookTypeInputs() {
+            var quantity = document.getElementById('bookdonationquantity').value;
+            var bookTypeInputsDiv = document.getElementById('bookTypeInputs');
+            bookTypeInputsDiv.innerHTML = ''; // Clear previous inputs
+
+            for (var i = 1; i <= quantity; i++) {
+                var label = document.createElement('label');
+                label.innerHTML = 'Type of Donation (Book ' + i + '):';
+                
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'bookdonationtype[]'; // Array to hold multiple types
+                input.required = true;
+                
+                bookTypeInputsDiv.appendChild(label);
+                bookTypeInputsDiv.appendChild(input);
+                bookTypeInputsDiv.appendChild(document.createElement('br'));
+            }
+        }
     </script>
     <!-- end book script -->
 
