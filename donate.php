@@ -4,6 +4,7 @@ include("loginnot_check.php");
 
 include("connection.php");
 
+// book data insert code
 if (isset($_POST['submiteBook'])) {
     // Get the form data
     $bookdonationquantity = $_POST['bookdonationquantity'];
@@ -26,6 +27,36 @@ if (isset($_POST['submiteBook'])) {
         $_SESSION['message'] = 'Error: ' . mysqli_error($conn);
     }
 }
+
+
+// clothes data insret code
+if (isset($_POST['submitClotes'])) {
+    // Retrieve form data
+    $name = $_POST['name'];
+    $contact = $_POST['contact'];
+    $clothesdonationquantity = $_POST['clothesdonationquantity'];
+    $clothesdonationaddress = $_POST['clothesdonationaddress'];
+    $clothesdonationdate = $_POST['clothesdonationdate'];
+    $clothesdonationsizes = $_POST['clothesdonationsize']; // Array of sizes
+
+    // Loop through the array of sizes and insert each into the database
+    for ($i = 0; $i < count($clothesdonationsizes); $i++) {
+        $size = $clothesdonationsizes[$i]; // Get the current size
+
+        $sql = "INSERT INTO clothedonationdetails (clothedonationquantity, clothedonationsize, clothedonationaddress, clothedonationdate, name, contact)
+                VALUES ($clothesdonationquantity, '$size', '$clothesdonationaddress', '$clothesdonationdate', '$name', '$contact')";
+
+        if (mysqli_query($conn, $sql)) {
+            echo "<script>alert('Clothes donation details successfully inserted.')</script>";
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
+    }
+    header("Location: causes.php");
+    exit();
+}
+
+mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -302,6 +333,7 @@ if (isset($_POST['submiteBook'])) {
                             </div>
                             <!-- donate radio button end -->
 
+
                             <!-- Book Donation Modal -->
                             <div id="formBookModal" class="modal fade" tabindex="-1" role="dialog"
                                 aria-labelledby="formBookLabel" aria-hidden="true">
@@ -323,8 +355,10 @@ if (isset($_POST['submiteBook'])) {
 
                                                 <label for="bookdonationquantity">Quantity:</label>
                                                 <input type="number" id="bookdonationquantity"
-                                                    name="bookdonationquantity" required><br><br>
+                                                    name="bookdonationquantity" required>
+                                                <span id="book-error-message" style="color: red; display: none;">Quantity should be at least 20.</span>
 
+                                                <br><br>
                                                 <label for="bookdonationtype">Type of Donation(Book Type e.x
                                                     college-book):</label>
                                                 <input type="text" id="bookdonationtype" name="bookdonationtype"
@@ -350,6 +384,8 @@ if (isset($_POST['submiteBook'])) {
                                     </div>
                                 </div>
                             </div>
+                            <!-- end book donation modal -->
+
 
                             <!-- Money Donation Modal -->
                             <div class="modal fade" id="moneyDonationModal" tabindex="-1" role="dialog"
@@ -363,50 +399,44 @@ if (isset($_POST['submiteBook'])) {
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="" method="POST">
-
+                                            <form id="donation-form" method="POST" action="process_donation.php">
                                                 <label for="donorfirstname">First Name:</label>
-                                                <input type="text" id="donorfirstname" name="donorfirstname"
-                                                    required><br><br>
+                                                <input type="text" id="donorfirstname" name="donorfirstname" required><br><br>
 
                                                 <label for="donorlastname">Last Name:</label>
-                                                <input type="text" id="donorlastname" name="donorlastname"
-                                                    required><br><br>
+                                                <input type="text" id="donorlastname" name="donorlastname" required><br><br>
 
                                                 <label for="donoremail">Email:</label>
                                                 <input type="email" id="donoremail" name="donoremail" required><br><br>
 
                                                 <label for="donationamount">Enter Amount:</label>
-                                                <input type="number" id="donationamount" name="donationamount"
-                                                    step="0.01" required><br><br>
-                                                <span id="error-message" style="color: red; display: none;">Amount must
-                                                    be at least 100 INR</span>
+                                                <input type="number" id="donationamount" name="donationamount" step="0.01" required><br><br>
+                                                <span id="error-message" style="color: red; display: none;">Amount must be at least 100 INR</span>
 
                                                 <label for="donoraddress">Address:</label>
-                                                <textarea id="donoraddress" name="donoraddress" rows="4"
-                                                    required></textarea><br><br>
+                                                <textarea id="donoraddress" name="donoraddress" rows="4" required></textarea><br><br>
 
                                                 <label for="message">Message (optional):</label>
                                                 <textarea id="message" name="message" rows="4"></textarea><br><br>
 
                                                 <label for="cardholdername">Cardholder Name:</label>
-                                                <input type="text" id="cardholdername" name="cardholdername"
-                                                    required><br><br>
+                                                <input type="text" id="cardholdername" name="cardholdername" required><br><br>
 
-                                                <input type="submit" value="Submit Donation" id="pay-button">
+                                                <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                                                <button type="button" id="pay-button">Submit Donation</button>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- end money donation modal -->
+                            
 
                             <!-- Modal for Clothes Donation -->
-                            <div class="modal fade" id="clothesDonationModal" tabindex="-1" role="dialog"
-                                aria-labelledby="clothesDonationModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="clothesDonationModal" tabindex="-1" role="dialog" aria-labelledby="clothesDonationModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -424,31 +454,28 @@ if (isset($_POST['submiteBook'])) {
                                                 <input type="tel" id="contact" name="contact" required><br><br>
 
                                                 <label for="clothesdonationquantity">Quantity:</label>
-                                                <input type="number" id="clothesdonationquantity"
-                                                    name="clothesdonationquantity" required><br><br>
+                                                <input type="number" id="clothesdonationquantity" name="clothesdonationquantity" required min="1" max="10"><br>
+                                                <span id="clothes-error-message" style="color: red; display: none;"></span><br><br>
 
-                                                <label for="clothesdonationsize">Size:</label>
-                                                <input type="text" id="clothesdonationsize" name="clothesdonationsize"
-                                                    required><br><br>
+                                                <div id="sizeInputs"></div> <!-- Where dynamic size inputs will be added -->
 
                                                 <label for="clothesdonationaddress">Address:</label>
-                                                <textarea id="clothesdonationaddress" name="clothesdonationaddress"
-                                                    rows="4" required></textarea><br><br>
+                                                <textarea id="clothesdonationaddress" name="clothesdonationaddress" rows="4" required></textarea><br><br>
 
                                                 <label for="clothesdonationdate">Date of Donation:</label>
-                                                <input type="date" id="clothesdonationdate" name="clothesdonationdate"
-                                                    required><br><br>
+                                                <input type="date" id="clothesdonationdate" name="clothesdonationdate" required><br><br>
 
-                                                <input type="submit" value="Submit Donation">
+                                                <input type="submit" value="Submit Donation" name="submitClotes">
                                             </form>
                                         </div>
+
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- end clotes donatiom modal -->
                         </div>
                     </div>
                 </div>
@@ -489,8 +516,9 @@ if (isset($_POST['submiteBook'])) {
                 </div>
             </div> <!-- end container -->
         </section>
-
         <!-- news-letter-section end-->
+
+        <!-- start tp-site-footer -->
         <div class="tp-ne-footer">
             <!-- start tp-site-footer -->
             <?php include("footer1.php"); ?>
@@ -550,6 +578,27 @@ if (isset($_POST['submiteBook'])) {
             });
         });
     </script>
+    <!-- end open modal -->
+
+    <!-- start book script --> 
+    <script>
+        // Validate book donation quantity
+        document.getElementById('bookdonationquantity').addEventListener('input', function () {
+            var quantityInput = document.getElementById('bookdonationquantity');
+            var quantity = parseInt(quantityInput.value);
+            var bookErrorMessage = document.getElementById('book-error-message');
+
+            // Check if quantity is valid and at least 20
+            if (isNaN(quantity) || quantity < 20) {
+                bookErrorMessage.style.display = 'inline';
+            } else {
+                bookErrorMessage.style.display = 'none';
+            }
+        });
+    </script>
+    <!-- end book script -->
+
+    
     <!-- payment script -->
     <script>
         document.getElementById('donationamount').addEventListener('input', function () {
@@ -565,46 +614,93 @@ if (isset($_POST['submiteBook'])) {
             }
         });
 
-        document.getElementById('pay-button').onclick = function (e) {
-            e.preventDefault(); // Prevent form submission
-
+        document.getElementById('pay-button').onclick = function () {
             var amountInput = document.getElementById('donationamount');
             var amount = parseFloat(amountInput.value);
             var errorMessage = document.getElementById('error-message');
 
-            // Check if amount is valid and at least 100
+            // Ensure the donation amount is valid before proceeding
             if (isNaN(amount) || amount < 100) {
                 errorMessage.style.display = 'inline';
-                return; // Prevent the Razorpay checkout from opening
+                return;
             }
 
             var options = {
-                key: 'rzp_test_tH5DYIuDK9fSF4', // Replace with your Razorpay Key ID
+                key: 'rzp_test_tH5DYIuDK9fSF4', // Replace with your Razorpay API key
                 amount: amount * 100, // amount in paise
                 currency: 'INR',
-                name: 'Hopefull Hearts',
+                name: 'Hopeful Hearts',
                 description: 'Donation',
                 handler: function (response) {
-                    // Handle success callback
-                    alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+                    // Payment successful, set the payment ID and submit the form
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('donation-form').submit();
                 },
                 prefill: {
-                    name: 'Dharmik Donda',
-                    email: 'dharmikdonda044@gmail.com',
-                    contact: '96574517681'
+                    name: document.getElementById('donorfirstname').value + ' ' + document.getElementById('donorlastname').value,
+                    email: document.getElementById('donoremail').value,
+                    contact: '9999999999' // Add actual contact field if you have it
                 },
                 notes: {
-                    address: ''
+                    address: document.getElementById('donoraddress').value
                 },
                 theme: {
                     color: '#f67d4a'
                 }
             };
-            var rzp = new Razorpay(options);
-            rzp.open();
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
         };
     </script>
+    <!-- end payment script -->
 
+
+    <!-- start colthes donate script -->
+    <script>
+        document.getElementById('clothesdonationquantity').addEventListener('input', function () {
+            var quantityInput = document.getElementById('clothesdonationquantity');
+            var quantity = parseInt(quantityInput.value);
+            var clothesErrorMessage = document.getElementById('clothes-error-message');
+            
+            // Validate quantity between 5 and 10
+            if (isNaN(quantity) || quantity < 5 || quantity > 10) {
+                clothesErrorMessage.style.display = 'inline';
+                if (quantity > 10) {
+                    clothesErrorMessage.textContent = 'You cannot donate more than 10 clothes at a time.';
+                } else {
+                    clothesErrorMessage.textContent = 'You must donate at least 5 piece of clothing.';
+                }
+                document.getElementById('sizeInputs').innerHTML = ''; // Clear size inputs if invalid
+            } else {
+                clothesErrorMessage.style.display = 'none';
+                generateSizeInputs(quantity);
+            }
+        });
+
+        function generateSizeInputs(quantity) {
+            var sizeInputsDiv = document.getElementById('sizeInputs');
+            sizeInputsDiv.innerHTML = ''; // Clear previous inputs
+
+            for (var i = 1; i <= quantity; i++) {
+                var label = document.createElement('label');
+                label.innerHTML = 'Enter girl and Boys Size for Clothes ' + i + ':';
+
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'clothesdonationsize[]'; // Array to hold multiple sizes
+                input.required = true;
+
+                sizeInputsDiv.appendChild(label);
+                sizeInputsDiv.appendChild(input);
+                sizeInputsDiv.appendChild(document.createElement('br'));
+                sizeInputsDiv.appendChild(document.createElement('br'));
+            }
+        }
+
+    </script>
+    <!-- end colthes donate script -->
+    
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <!-- Plugins for this template -->
