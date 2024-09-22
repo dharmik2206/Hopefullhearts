@@ -33,11 +33,12 @@ session_start();
     <link href="assets/css/nice-select.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/light.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.1/icofont.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@icon/icofont@1.0.1-alpha.1/icofont.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-</head>
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200/">
+</head> 
 <style>
     /* CSS styles for sidebar */
     .sidebar {
@@ -95,7 +96,7 @@ session_start();
 </style>
 
 <body>
-    <!-- start page-wrapper -->
+<!-- start page-wrapper -->
     <div class="page-wrapper">
         <!-- start preloader -->
         <div class="preloader">
@@ -175,48 +176,6 @@ session_start();
             </div>
         </section>
         <!-- end of hero slider -->
-        <!--features start -->
-        <div class="features-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="features-item-2">
-                            <div class="features-icon">
-                                <i class="icofont-shirt"></i> IcoFont icon for Clothes
-                            </div>
-                            <div class="features-content">
-                                <p>Donate For</p>
-                                <h3>Clothes</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="features-item-2">
-                            <div class="features-icon">
-                                <i class="icofont-money"></i> IcoFont icon for Money
-                            </div>
-                            <div class="features-content">
-                                <p>Donate For</p>
-                                <h3>Money</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="features-item-2">
-                            <div class="features-icon">
-                                <i class="icofont-book"></i> IcoFont icon for Books
-                            </div>
-                            <div class="features-content">
-                                <p>Donate For</p>
-                                <h3>Books</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--features-features end -->
         <!-- about-area start-->
         <div class="about-style-2">
             <div class="container">
